@@ -1,5 +1,12 @@
 local M = {}
 
+---@class TerminalOpts
+---@field keymap? string  Key to toggle the terminal (default: "<C-t>")
+---@field width?  number  Window width as a fraction of the editor 0–1 (default: 0.8)
+---@field height? number  Window height as a fraction of the editor 0–1 (default: 0.4)
+---@field row?    number  Vertical anchor: 0 = top, 1 = bottom (default: 1.0)
+---@field col?    number  Horizontal anchor: 0 = left, 0.5 = center, 1 = right (default: 0.5)
+
 local term_buf = nil
 local term_win = nil
 
@@ -75,6 +82,7 @@ function M.toggle_floating_terminal()
     end
 end
 
+---@param opts? TerminalOpts
 function M.setup(opts)
     config = vim.tbl_deep_extend("force", default_opts, opts or {})
 
