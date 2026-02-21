@@ -72,18 +72,20 @@ function M.setup()
         {}
     )
 
-    -- Set up keymaps
+    -- <C-'> via kitty keyboard protocol (Ghostty, kitty, etc.)
+    -- The terminal sends Ctrl+' as the CSI u sequence \x1b[39;5u
+    local ctrl_quote = vim.keycode("<C-'>")
     vim.keymap.set(
         "n",
-        "<C-'>",
-        ":TermFloat<CR>",
-        { noremap = true, silent = true }
+        ctrl_quote,
+        M.toggle_floating_terminal,
+        { noremap = true, silent = true, desc = "Toggle floating terminal" }
     )
     vim.keymap.set(
         "t",
-        "<C-'>",
+        ctrl_quote,
         "<C-\\><C-n>:TermFloat<CR>",
-        { noremap = true, silent = true }
+        { noremap = true, silent = true, desc = "Toggle floating terminal" }
     )
     vim.keymap.set(
         "t",
