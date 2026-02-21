@@ -4,7 +4,7 @@ A floating terminal for Neovim.
 
 ## Features
 
-- Toggle a floating terminal window with `<C-'>`
+- Toggle a floating terminal window with `<C-t>`
 - Terminal state is preserved between toggles
 
 ## Installation
@@ -22,7 +22,7 @@ A floating terminal for Neovim.
 
 ## Usage
 
-- `<C-'>` — toggle the floating terminal (works in normal and terminal mode)
+- `<C-t>` — toggle the floating terminal (works in normal and terminal mode)
 - `:TermFloat` — toggle the floating terminal via command
 - `<C-w>` in terminal mode — switch to window navigation
 

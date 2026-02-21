@@ -64,7 +64,7 @@ function M.toggle_floating_terminal()
     end
 end
 
-function M.setup()
+function M.setup(opts)
     -- Create a user command to call this function
     vim.api.nvim_create_user_command(
         "TermFloat",
@@ -72,19 +72,19 @@ function M.setup()
         {}
     )
 
-    -- <C-'> via kitty keyboard protocol (Ghostty, kitty, etc.)
-    -- The terminal sends Ctrl+' as the CSI u sequence \x1b[39;5u
-    local ctrl_quote = vim.keycode("<C-'>")
     vim.keymap.set(
         "n",
-        ctrl_quote,
+        "<C-t>",
         M.toggle_floating_terminal,
         { noremap = true, silent = true, desc = "Toggle floating terminal" }
     )
     vim.keymap.set(
         "t",
-        ctrl_quote,
-        "<C-\\><C-n>:TermFloat<CR>",
+        "<C-t>",
+        function()
+            vim.cmd("stopinsert")
+            M.toggle_floating_terminal()
+        end,
         { noremap = true, silent = true, desc = "Toggle floating terminal" }
     )
     vim.keymap.set(
