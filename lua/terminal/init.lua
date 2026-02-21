@@ -3,6 +3,16 @@ local M = {}
 local term_buf = nil
 local term_win = nil
 
+local default_opts = {
+    keymap = "<C-t>",
+    width = 0.8,   -- fraction of editor width
+    height = 0.4,  -- fraction of editor height
+    row = 1.0,     -- fraction of editor height (1.0 = bottom edge)
+    col = 0.5,     -- fraction of editor width  (0.5 = centered)
+}
+
+local config = {}
+
 function M.toggle_floating_terminal()
     if term_win and vim.api.nvim_win_is_valid(term_win) then
         if vim.fn.win_getid() ~= term_win then
@@ -16,22 +26,23 @@ function M.toggle_floating_terminal()
         end
     else
         -- Create or show terminal window
-        local width = vim.o.columns
-        local height = vim.o.lines
+        local total_w = vim.o.columns
+        local total_h = vim.o.lines
         -- Calculate floating window size
-        local win_height = math.ceil(height * 0.4 - 4)
-        local win_width = math.ceil(width * 0.8)
+        local win_width  = math.ceil(total_w * config.width)
+        local win_height = math.ceil(total_h * config.height - 4)
         -- Calculate starting position
-        local col = math.ceil((width - win_width) / 2)
+        local col = math.ceil((total_w * config.col) - win_width / 2)
+        local row = math.ceil(total_h * config.row)
         -- Set some options
         local opts = {
-            style = "minimal",
+            style    = "minimal",
             relative = "editor",
-            width = win_width,
-            height = win_height,
-            row = height,
-            col = col,
-            border = "rounded",
+            width    = win_width,
+            height   = win_height,
+            row      = row,
+            col      = col,
+            border   = "rounded",
         }
         if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
             -- Reuse existing buffer
@@ -54,7 +65,7 @@ function M.toggle_floating_terminal()
             buffer = term_buf,
             callback = function()
                 local new_height = vim.api.nvim_win_get_height(term_win)
-                local new_width = vim.api.nvim_win_get_width(term_win)
+                local new_width  = vim.api.nvim_win_get_width(term_win)
                 vim.api.nvim_chan_send(
                     vim.b[term_buf].terminal_job_id,
                     string.format("\027[8;%d;%dt", new_height, new_width)
@@ -65,6 +76,8 @@ function M.toggle_floating_terminal()
 end
 
 function M.setup(opts)
+    config = vim.tbl_deep_extend("force", default_opts, opts or {})
+
     -- Create a user command to call this function
     vim.api.nvim_create_user_command(
         "TermFloat",
@@ -74,13 +87,13 @@ function M.setup(opts)
 
     vim.keymap.set(
         "n",
-        "<C-t>",
+        config.keymap,
         M.toggle_floating_terminal,
         { noremap = true, silent = true, desc = "Toggle floating terminal" }
     )
     vim.keymap.set(
         "t",
-        "<C-t>",
+        config.keymap,
         function()
             vim.cmd("stopinsert")
             M.toggle_floating_terminal()
