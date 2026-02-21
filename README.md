@@ -14,9 +14,6 @@ A floating terminal for Neovim.
 ```lua
 {
   "gzitei/terminal.nvim",
-  keys = {
-    { "<C-'>", desc = "Toggle floating terminal" },
-  },
   config = function()
     require("terminal").setup()
   end,
